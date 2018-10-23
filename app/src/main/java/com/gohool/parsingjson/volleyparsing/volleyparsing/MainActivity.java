@@ -35,9 +35,14 @@ public class MainActivity extends AppCompatActivity {
 
         queue = Volley.newRequestQueue(this);
 
-        getStringObject(URL_STRING);
+//        getJsonArray(URL);
+//        getStringObject(URL_STRING);
+        getJsonObject(URL_EQ);
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, URL, new Response.Listener<JSONObject>() {
+    }
+
+    public void getJsonArray(String url) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
@@ -77,6 +82,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getJsonObject(String url) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+//                    Log.d("Object: ", response.getString("type"));
 
+//                    JSONObject metadata = response.getJSONObject("metadata");
+//                    Log.d("Metadata: ", metadata.toString());
+//                    Log.d("MetaInfo: ", metadata.getString("generated"));
+//                    Log.d("MetaInfo: ", metadata.getString("url"));
+//                    Log.d("MetaInfo: ", metadata.getString("title"));
+
+                    JSONArray features = response.getJSONArray("features");
+                    for (int i = 0; i < features.length(); i++) {
+                        JSONObject propertiesObj = features.getJSONObject(i).getJSONObject("properties");
+                        Log.d("Place", propertiesObj.getString("place"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        queue.add(jsonObjectRequest);
     }
 }
